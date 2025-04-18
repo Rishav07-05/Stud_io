@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Notes - Study Room</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
+  <style>
+    .sidebar {
+      width: 250px;
+      background-color: rgba(0, 0, 0, 0.8);
+      position: fixed;
+      top: 0;
+      left: -250px;
+      height: 100%;
+      transition: 0.3s;
+      padding-top: 20px;
+      z-index: 999;
+    }
+
+    .sidebar.show {
+      left: 0;
+    }
+
+    .profile-card {
+      background-color: rgba(0, 0, 0, 0.8);
+      padding: 20px;
+      border-radius: 50%;
+      text-align: center;
+      width: 70px;
+      height: 70px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 1001;
+    }
+
+    .main-content {
+      transition: margin-left 0.3s;
+      padding: 20px;
+      margin-left: 0;
+    }
+
+    .main-content.shifted {
+      margin-left: 250px;
+    }
+
+    body {
+      overflow-x: hidden;
+    }
+  </style>
+</head>
+<body class="bg-gradient-to-br from-purple-900 via-black to-black text-white min-h-screen">
+  <!-- Hamburger Button -->
+  <button id="sidebarToggle" class="text-white text-3xl focus:outline-none fixed top-5 left-5 z-[1001]">
+    <i class="fa-solid fa-bars"></i>
+  </button>
+
+  <!-- Profile Card -->
+   <div class="profile-card">
+    <a href="profile.html">
+      <span class="px-4 py-3 bg-purple-500 rounded-full text-sm">
+        <i class="fa-solid fa-user"></i>
+      </span>
+    </a>
+  </div>
+
+  <!-- Sidebar -->
+  <div id="sidebar" class="sidebar">
+    <button id="closeSidebar" class="text-white text-2xl absolute top-4 right-4">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+    <nav class="flex flex-col gap-3 mt-8 px-4">
+        <a href="home.html">Home</a>
+      <a href="dashboard.html">Dashboard</a>
+      <a href="routine.html">Routine</a>
+      <a href="notes.html" class="text-purple-400 font-semibold">Notes</a>
+      <a href="flashcards.html">Flashcards</a>
+      <a href="login.html" class="text-red-400">Logout</a>
+    </nav>
+  </div>
+
+  <!-- Main Content -->
+  <main id="main-content" class="main-content">
+    <div class="max-w-2xl mx-auto mt-32 p-8 bg-black/70 rounded-xl shadow-lg">
+      <h1 class="text-3xl font-bold text-purple-300 mb-6">Your Notes</h1>
+      <textarea 
+        id="noteInput" 
+        placeholder="Write your note..." 
+        class="w-full p-4 rounded bg-gray-800 mb-4 resize-none min-h-[100px] focus:outline-none focus:border-purple-500 border border-gray-700"
+      ></textarea>
+      <button 
+        onclick="saveNote()" 
+        class="bg-green-600 hover:bg-green-500 px-6 py-3 rounded font-semibold transition w-full">
+        Save Note
+      </button>
+      <div id="notesList" class="mt-6 space-y-4 text-left"></div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="text-center text-gray-400 py-4 mt-auto">
+    &copy; 2025 Study Room. All rights reserved.
+  </footer>
+
+  <!-- Sidebar Script -->
+  <script>
+    const sidebarToggle = document.getElementById('sidebarToggle');
+    const closeSidebar = document.getElementById('closeSidebar');
+    const sidebar = document.getElementById('sidebar');
+    const mainContent = document.getElementById('main-content');
+
+    sidebarToggle.addEventListener('click', () => {
+      sidebar.classList.add('show');
+      mainContent.classList.add('shifted');
+      sidebarToggle.style.display = 'none';
+    });
+
+    closeSidebar.addEventListener('click', () => {
+      sidebar.classList.remove('show');
+      mainContent.classList.remove('shifted');
+      sidebarToggle.style.display = 'block';
+    });
+  </script>
+
+  <script src="js/notes.js" defer></script>
+</body>
+</html>

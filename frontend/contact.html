@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Contact Us</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .glass {
+      background: rgba(30, 30, 30, 0.4);
+      backdrop-filter: blur(15px);
+      -webkit-backdrop-filter: blur(15px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .glow {
+      box-shadow: 0 0 15px rgba(139, 92, 246, 0.5);
+    }
+  </style>
+</head>
+<body class="bg-gradient-to-br from-purple-900 via-black to-black text-white min-h-screen flex items-center justify-center relative overflow-hidden px-4">
+
+
+  <!-- Contact Form -->
+  <div class="glass z-10 p-10 rounded-2xl shadow-2xl w-full max-w-2xl animate-fade-in">
+    <h2 class="text-4xl font-bold text-center mb-6 bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 text-transparent bg-clip-text">Contact Us</h2>
+    <p class="text-gray-300 text-center mb-8">We'd love to hear from you! Whether it's feedback, questions, or just to say hi 👋</p>
+
+    <form class="space-y-6">
+      <div>
+        <label for="name" class="block text-sm text-gray-300 mb-1">Your Name</label>
+        <input type="text" id="name" name="name" required class="w-full p-3 rounded-lg bg-gray-800/60 border border-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-purple-500" />
+      </div>
+
+      <div>
+        <label for="email" class="block text-sm text-gray-300 mb-1">Email Address</label>
+        <input type="email" id="email" name="email" required class="w-full p-3 rounded-lg bg-gray-800/60 border border-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-purple-500" />
+      </div>
+
+      <div>
+        <label for="message" class="block text-sm text-gray-300 mb-1">Message</label>
+        <textarea id="message" name="message" rows="5" required class="w-full p-3 rounded-lg bg-gray-800/60 border border-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-purple-500"></textarea>
+      </div>
+
+      <div class="text-center">
+        <button type="submit" class="bg-purple-600 hover:bg-purple-500 px-8 py-3 rounded-full font-semibold transition glow">Send Message</button>
+      </div>
+    </form>
+  </div>
+
+  <script>
+
+    document.body.classList.add("opacity-0");
+    window.addEventListener("load", () => {
+      document.body.classList.remove("opacity-0");
+      document.body.classList.add("transition-opacity", "duration-1000", "opacity-100");
+    });
+
+
+    document.querySelector("form").addEventListener("submit", async function (e) {
+  e.preventDefault();
+
+  const name = this.name.value.trim();
+  const email = this.email.value.trim();
+  const message = this.message.value.trim();
+
+  if (!name || !email || !message) {
+    alert("Please fill out all fields.");
+    return;
+  }
+
+  try {
+    const res = await fetch("../backend/contact.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name, email, message })
+    });
+
+    const result = await res.json();
+    alert(result.message || "Submitted.");
+    if (result.success) this.reset();
+  } catch (err) {
+    alert("Something went wrong. Please try again.");
+    console.error(err);
+  }
+});
+  </script>
+</body>
+</html>

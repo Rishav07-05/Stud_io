@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Pomodoro Timer</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body, html {
+      height: 100%;
+      margin: 0;
+    }
+
+    .video-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      object-fit: cover;
+      opacity: 0.75;
+    }
+
+    .timer-circle {
+      width: 250px;
+      height: 250px;
+      border-radius: 50%;
+      background-color: rgba(0, 0, 0, 0.5);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 3rem;
+      font-weight: bold;
+      color: white;
+      border: 4px solid white;
+      box-shadow: 0 0 20px rgba(255,255,255,0.3);
+      z-index: 10;
+    }
+
+    .thumbnail {
+      width: 60px;
+      height: 60px;
+      border-radius: 8px;
+      object-fit: cover;
+      border: 2px solid transparent;
+      cursor: pointer;
+    }
+
+    .thumbnail.active {
+      border-color: #9333ea;
+      box-shadow: 0 0 10px #9333ea;
+    }
+
+    .sidebar {
+      transition: transform 0.3s ease-in-out;
+    }
+
+    .sidebar.closed {
+      transform: translateX(-100%);
+    }
+  </style>
+</head>
+<body class="bg-gradient-to-br from-purple-900 via-black to-black text-white">
+
+  <!-- 🎥 Background Video -->
+  <video id="bgVideo" class="video-bg" autoplay muted loop playsinline>
+    <source src="../utils/d2176d99f5b4fb5939edb0f5246eea29.mp4" type="video/mp4">
+  </video>
+
+  <!-- 📂 Sidebar -->
+  <div id="sidebar" class="sidebar fixed top-0 left-0 h-full w-64 bg-black p-6 z-40 closed">
+    <button id="closeSidebar" class="text-white text-2xl absolute top-4 right-4">✖</button>
+    <ul class="space-y-3 mt-10">
+      <li><a href="home.html" class="hover:text-purple-400">Home</a></li>
+      <li><a href="dashboard.html" class="hover:text-purple-400">Dashboard</a></li>
+      <li><a href="notes.html" class="hover:text-purple-400">Notes</a></li>
+      <li><a href="routine.html" class="hover:text-purple-400">Routine</a></li>
+      <li><a href="flashcards.html" class="hover:text-purple-400">Flashcard</a></li>
+      <li><a href="login.html" class="hover:text-red-500 text-red-400">Logout</a></li>
+    </ul>
+  </div>
+
+  <!-- 🍔 Hamburger Icon -->
+  <button id="openSidebar" class="fixed top-4 left-4 text-white text-3xl z-50">☰</button>
+
+  <!-- 🎨 Theme Thumbnails -->
+  <div class="absolute top-5 left-1/2 -translate-x-1/2 bg-black/60 p-4 rounded-xl shadow-md flex gap-4 z-30">
+    <video class="thumbnail active" autoplay muted loop data-theme="focus">
+      <source src="../utils/d2176d99f5b4fb5939edb0f5246eea29.mp4" type="video/mp4">
+    </video>
+    <video class="thumbnail" autoplay muted loop data-theme="forest">
+      <source src="../utils/15b11f5ce3c859f7f61255eb3c5d2800.mp4" type="video/mp4">
+    </video>
+    <video class="thumbnail" autoplay muted loop data-theme="rain">
+      <source src="../utils/31e92d8fa400e54feb0b176296ff5957.mp4" type="video/mp4">
+    </video>
+    <video class="thumbnail" autoplay muted loop data-theme="beach">
+      <source src="../utils/55ba482cee3f68e8f161a71fcbbe3a13.mp4" type="video/mp4">
+    </video>
+    <video class="thumbnail" autoplay muted loop data-theme="night">
+      <source src="../utils/My Neighbor Totoro.mp4" type="video/mp4">
+    </video>
+    <video class="thumbnail" autoplay muted loop data-theme="sunset">
+      <source src="../utils/50bb21fd122685c98581a7d55c5f180b.mp4" type="video/mp4">
+    </video>
+  </div>
+
+  <!-- 🧘 Main Center Content -->
+  <div class="flex flex-col items-center justify-center min-h-screen z-10 relative">
+    <div class="timer-circle mt-32 sm:mt-40" id="clockDisplay">25:00</div>
+    <div class="mt-6 flex flex-wrap justify-center gap-4">
+      <input id="customMinutes" type="number" min="1" placeholder="Set minutes" class="text-black px-3 py-2 rounded w-32" />
+      <button id="startBtn" class="bg-green-600 px-4 py-2 rounded hover:bg-green-700">Start</button>
+      <button id="resetBtn" class="bg-red-600 px-4 py-2 rounded hover:bg-red-700">Reset</button>
+    </div>
+  </div>
+
+  <!-- 🧠 Script -->
+  <script>
+    const bgVideo = document.getElementById("bgVideo");
+    const thumbnails = document.querySelectorAll(".thumbnail");
+    const clockDisplay = document.getElementById("clockDisplay");
+    const startBtn = document.getElementById("startBtn");
+    const resetBtn = document.getElementById("resetBtn");
+    const customMinutes = document.getElementById("customMinutes");
+
+    const sidebar = document.getElementById("sidebar");
+    const openSidebar = document.getElementById("openSidebar");
+    const closeSidebar = document.getElementById("closeSidebar");
+
+    let interval;
+    let totalSeconds = 1500;
+
+    const themes = {
+      focus: "../utils/d2176d99f5b4fb5939edb0f5246eea29.mp4",
+      forest: "../utils/15b11f5ce3c859f7f61255eb3c5d2800.mp4",
+      rain: "../utils/31e92d8fa400e54feb0b176296ff5957.mp4",
+      beach: "../utils/55ba482cee3f68e8f161a71fcbbe3a13.mp4",
+      night: "../utils/My Neighbor Totoro.mp4",
+      sunset: "../utils/50bb21fd122685c98581a7d55c5f180b.mp4"
+    };
+
+    openSidebar.addEventListener("click", () => {
+      sidebar.classList.remove("closed");
+      openSidebar.style.display = "none";
+    });
+
+    closeSidebar.addEventListener("click", () => {
+      sidebar.classList.add("closed");
+      openSidebar.style.display = "block";
+    });
+
+    function updateTimerDisplay() {
+      const min = Math.floor(totalSeconds / 60);
+      const sec = totalSeconds % 60;
+      clockDisplay.textContent = `${String(min).padStart(2, '0')}:${String(sec).padStart(2, '0')}`;
+    }
+
+    function startTimer() {
+      if (interval) clearInterval(interval);
+      interval = setInterval(() => {
+        if (totalSeconds <= 0) {
+          clearInterval(interval);
+          alert("Great job! Time's up.");
+          return;
+        }
+        totalSeconds--;
+        updateTimerDisplay();
+      }, 1000);
+    }
+
+    function resetTimer() {
+      clearInterval(interval);
+      totalSeconds = 1500;
+      updateTimerDisplay();
+    }
+
+    thumbnails.forEach(thumb => {
+      thumb.addEventListener("click", () => {
+        const selected = thumb.getAttribute("data-theme");
+        bgVideo.src = themes[selected];
+        bgVideo.load();
+        bgVideo.play();
+
+        thumbnails.forEach(t => t.classList.remove("active"));
+        thumb.classList.add("active");
+      });
+    });
+
+    startBtn.addEventListener("click", () => {
+      const minutes = parseInt(customMinutes.value);
+      if (!isNaN(minutes) && minutes > 0) {
+        totalSeconds = minutes * 60;
+        updateTimerDisplay();
+      }
+      startTimer();
+    });
+
+    resetBtn.addEventListener("click", resetTimer);
+
+    updateTimerDisplay();
+  </script>
+</body>
+</html>

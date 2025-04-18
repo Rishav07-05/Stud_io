@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Study Room - Home</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="./js/home.js" defer></script>
+  <style>
+    .video-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      object-fit: cover;
+      z-index: 0;
+    }
+
+    .overlay {
+      background: rgba(0, 0, 0, 0.6);
+    }
+    
+    
+
+ 
+  </style>
+</head>
+<body class="relative text-white min-h-screen flex flex-col overflow-hidden">
+
+  <video autoplay muted loop class="video-bg">
+    <source src="../utils/0f167bbfeb31d83e0805823a0b9a3c8c.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+
+  <div class="absolute inset-0 overlay z-10"></div>
+
+  <div class="relative z-20 flex flex-col min-h-screen">
+
+    <nav class="bg-opacity-60  px-6 py-4 flex flex-col sm:flex-row sm:justify-between items-center">
+      <!-- Place this inside your body -->
+<div class="relative w-fit mt-10">
+  <h1 class="text-6xl font-bold text-transparent bg-clip-text z-10 relative"
+      style="background-image: url('https://i.pinimg.com/474x/85/46/56/8546569d2133c5d589fce40c7d874973.jpg');
+             background-size: cover;
+             background-position: center;">
+    Stud.io
+  </h1>
+</div>
+
+
+
+      <ul class="flex flex-wrap justify-center gap-6 text-lg font-medium">
+        <li><a href="contact.html" class="hover:text-purple-400 transition text-purple-300">Contact</a></li>
+        <li><a href="about.html" class="hover:text-purple-400 transition text-purple-300">About</a></li>
+        <li><a href="faq.html" class="hover:text-purple-400 transition text-purple-300">FAQs</a></li>
+      </ul>
+    </nav>
+
+    <main class="flex-1 flex flex-col items-center justify-center text-center px-4">
+      <h2 class="text-4xl sm:text-5xl font-extrabold mb-4 text-purple-300">Welcome to the Virtual Study App</h2>
+      <p class="text-lg sm:text-xl text-gray-300 mb-8 max-w-xl">
+        Boost your focus and productivity using the virtual techniques. Organize your notes, take meaningful breaks, make learning efficient and go for pomodoro reading.
+      </p>
+      <a href="dashboard.html" class="bg-purple-700 hover:bg-purple-800 text-white px-6 py-3 rounded-xl text-lg font-semibold transition duration-300 shadow-md">
+        Go to Dashboard
+      </a>
+    </main>
+
+    <footer class="text-center text-gray-400 py-4">
+      &copy; 2025 Study Room. All rights reserved.
+    </footer>
+  </div>
+</body>
+</html>
